@@ -15,6 +15,8 @@ const serve = require('electron-serve');
 const logger = require('electron-timber');
 const ipc = require('electron-better-ipc');
 const unhandled = require('electron-unhandled');
+const debug = require('electron-debug');
+const contextMenu = require('electron-context-menu');
 const appMenu = require('./menu');
 const config = require('./config');
 const marketmaker = require('./marketmaker');
@@ -29,22 +31,17 @@ unhandled({
 	},
 });
 
-require('electron-debug')({
-	enabled: isDevelopment,
+debug({
+	isEnabled: isDevelopment,
 });
 
-require('electron-context-menu')();
+contextMenu();
 
 try {
 	require('electron-reloader')(module, {watchRenderer: false});
 } catch (_) {}
 
 const {app, session} = electron;
-
-// Disables broken color space correction in Chromium.
-// You can see differing background color on the login screen.
-// https://github.com/electron/electron/issues/9671
-app.commandLine.appendSwitch('disable-color-correct-rendering');
 
 app.setAppUserModelId('com.lukechilds.hyperdex');
 
